@@ -30,6 +30,7 @@ type app struct {
 	clientID     string
 	clientSecret string
 	redirectURI  string
+	scopes		 string
 
 	verifier *oidc.IDTokenVerifier
 	provider *oidc.Provider
