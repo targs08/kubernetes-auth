@@ -201,6 +201,7 @@ func cmd() *cobra.Command {
 	c.Flags().StringVar(&a.clientID, "client-id", "k8s-auth", "OAuth2 client ID of this application.")
 	c.Flags().StringVar(&a.clientSecret, "client-secret", "ZXhhbXBsZS1hcHAtc2VjcmV0", "OAuth2 client secret of this application.")
 	c.Flags().StringVar(&a.redirectURI, "redirect-uri", "http://127.0.0.1:5555", "Callback URL for OAuth2 responses.")
+	c.Flags().StringVar(&a.scopes, "scopes", "openid,profile,email,groups", "OAuth2 scopes values.")
 	c.Flags().StringVar(&issuerURL, "issuer", "https://dex.example.com", "URL of the OpenID Connect issuer.")
 	c.Flags().StringVar(&listen, "listen", "http://127.0.0.1:5555", "HTTP(S) address to listen at.")
 	c.Flags().StringVar(&tlsCert, "tls-cert", "", "X509 cert file to present when serving HTTPS.")
@@ -250,7 +251,7 @@ func (a *app) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	authCodeURL := ""
-	scopes = append(scopes, "openid", "profile", "email", "groups")
+	scopes = append(scopes, strings.Split(a.scopes, ",")...)
 	if a.offlineAsScope {
 		scopes = append(scopes, "offline_access")
 		authCodeURL = a.oauth2Config(scopes).AuthCodeURL(authenticationState)
